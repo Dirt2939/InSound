@@ -1,0 +1,6 @@
+{
+  "appId": "com.insound.app",
+  "appName": "InSound",
+  "webDir": "dist",
+  "backgroundColor": "#000000"
+}
