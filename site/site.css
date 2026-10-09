@@ -315,3 +315,21 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor [dat
   .big { font-size: clamp(24px, 4.4vw, 48px); }
   .lede, .scroll-hint { display: none; }
 }
+
+/* ───────── roadmap no desktop: linha do tempo horizontal, com barras de alturas diferentes ───────── */
+@media (min-width: 901px) {
+  .road { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; max-width: none; padding: 150px 0 0; margin-top: 56px; }
+  .road::before { left: 0; right: 0; top: 140px; bottom: auto; width: auto; height: 2px; background: linear-gradient(90deg, var(--fg) calc(var(--p) * 100%), var(--line) calc(var(--p) * 100%)); }
+  .road li { padding: 0; }
+  .road li::before { left: 0; top: auto; bottom: calc(100% + 10px); width: 16px; height: 36px; border-radius: 8px 8px 3px 3px; background: var(--line2); transform-origin: 50% 100%; transform: scaleY(0.05); transition: transform 1s var(--spring), background 0.5s, box-shadow 0.5s; }
+  .road li:has(.st-done)::before { height: 118px; }
+  .road li:has(.st-next)::before { height: 76px; }
+  .road li.in::before { transform: none; background: var(--fg); }
+  .road li:has(.st-next).in::before { background: transparent; box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .road li:has(.st-later).in::before { background: var(--line2); }
+  .road li:hover::before { transform: scaleY(1.08); }
+  .road li:has(.st-done):hover::before { box-shadow: 0 0 34px rgba(255, 255, 255, 0.35); }
+  .road li:nth-child(2).in::before { transition-delay: 0.08s; } .road li:nth-child(3).in::before { transition-delay: 0.16s; } .road li:nth-child(4).in::before { transition-delay: 0.24s; } .road li:nth-child(5).in::before { transition-delay: 0.32s; }
+  .road h3 { font-size: 19px; margin-top: 12px; }
+  .road p { font-size: 14px; }
+}
