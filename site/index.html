@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <meta name="color-scheme" content="dark" />
+  <title>InSound — Sua música, do seu jeito.</title>
+  <meta name="description" content="InSound é um player de música feito de cinco barras: interface em preto e branco, capas coloridas, waveform para navegar e animações discretas. Projeto acadêmico." />
+  <meta property="og:title" content="InSound — Sua música, do seu jeito." />
+  <meta property="og:description" content="Um player feito de cinco barras. Preto e branco, com as capas em cores." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="./site.css" />
+</head>
+<body>
+  <!-- intro: a logo acende barra por barra e se dissolve na logo do palco -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro-logo" data-logo="132"></div>
+    <div class="intro-bar"><i></i></div>
+  </div>
+
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="InSound — início">
+      <span class="brand-logo" data-logo="30"></span>
+      <span class="brand-wm" data-letters>InSound</span>
+    </a>
+    <nav class="nav-links" aria-label="Seções">
+      <a href="#produto" data-hover>Por dentro</a>
+      <a href="#fontes" data-hover>Fontes</a>
+      <a href="#roadmap" data-hover>Roadmap</a>
+      <a href="#sobre" data-hover>Sobre</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="play-btn" id="play" type="button" aria-pressed="false" title="Toca um som gerado na hora (atalho: Espaço)">
+        <span class="play-ico" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span id="play-label">Dar play</span>
+      </button>
+      <a class="btn btn-solid mag" href="/">Abrir o app</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ═════ PALCO: as mesmas barras viram logo, waveform, equalizadores, vinil, silêncio e logo ═════ -->
+    <section class="stage" id="stage" aria-label="Apresentação">
+      <div class="stage-sticky">
+        <canvas id="stage-canvas" aria-hidden="true"></canvas>
+        <div class="vignette" aria-hidden="true"></div>
+
+        <div class="chapters">
+          <article class="chapter c0">
+            <p class="eyebrow">Player de música · projeto acadêmico</p>
+            <h1 class="hero-title" data-letters>Sua música,<br />do seu jeito.</h1>
+            <p class="lede">Cinco barras. Um player. Nenhum exagero.</p>
+            <div class="scroll-hint" aria-hidden="true"><span class="sh-bars"><i></i><i></i><i></i><i></i><i></i></span> role para ouvir com os olhos</div>
+          </article>
+
+          <article class="chapter c1">
+            <p class="eyebrow">01 · Waveform</p>
+            <h2 class="big">Veja a música,<br />não só ouça.</h2>
+            <p class="lede">A barra de progresso é uma onda. Arraste para navegar pela faixa — a parte já tocada acende.</p>
+          </article>
+
+          <article class="chapter c2">
+            <p class="eyebrow">02 · Fontes</p>
+            <h2 class="big">De onde vem o som?<br />Você escolhe.</h2>
+            <div class="trio" aria-hidden="false">
+              <div><b>Audius</b><span>grátis, sem conta</span></div>
+              <div><b>Spotify</b><span>catálogo completo, Premium</span></div>
+              <div><b>Demo</b><span>só para ver a interface</span></div>
+            </div>
+          </article>
+
+          <article class="chapter c3">
+            <p class="eyebrow">03 · Cor</p>
+            <h2 class="big">Interface em preto e branco.<br />A capa, não.</h2>
+            <p class="lede">O app é monocromático de propósito: as cores ficam por conta da arte do disco.</p>
+          </article>
+
+          <article class="chapter c4">
+            <p class="eyebrow">04 · Calma</p>
+            <h2 class="big">Sem exageros.</h2>
+            <p class="lede">Animações curtas que somem quando você pede (<code>prefers-reduced-motion</code>). Silêncio também é design.</p>
+          </article>
+
+          <article class="chapter c5">
+            <p class="eyebrow">InSound</p>
+            <h2 class="big">Sua música,<br />do seu jeito.</h2>
+            <div class="cta-row">
+              <a class="btn btn-solid btn-lg mag" href="/">Abrir o InSound</a>
+              <a class="btn btn-ghost btn-lg mag" href="#produto">Ver por dentro</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════ POR DENTRO ═════ -->
+    <section class="sec" id="produto">
+      <div class="wrap split">
+        <div class="split-text">
+          <p class="eyebrow reveal">Por dentro</p>
+          <h2 class="h2" data-words>Detalhes que você sente, sem notar.</h2>
+          <p class="body reveal">Passe o mouse (ou espere) e o celular ao lado mostra cada recurso funcionando. Tudo isso roda em HTML, CSS e JavaScript puros.</p>
+          <ul class="feats">
+            <li class="feat reveal" data-demo="wave" tabindex="0">
+              <span class="feat-n">01</span>
+              <div><h3>Waveform como barra de progresso</h3><p>Barras orgânicas, eco da logo. Arraste para buscar; as barras perto do playhead respiram.</p></div>
+            </li>
+            <li class="feat reveal" data-demo="cover" tabindex="0">
+              <span class="feat-n">02</span>
+              <div><h3>A capa que voa</h3><p>Do mini-player para a tela cheia, a capa viaja de verdade (View Transitions), em vez de só aparecer.</p></div>
+            </li>
+            <li class="feat reveal" data-demo="pill" tabindex="0">
+              <span class="feat-n">03</span>
+              <div><h3>Pílula-notificação</h3><p>Entra, expande, mostra o que mudou e recolhe até virar só a capa.</p></div>
+            </li>
+            <li class="feat reveal" data-demo="glow" tabindex="0">
+              <span class="feat-n">04</span>
+              <div><h3>Brilho ambiente</h3><p>Um reflexo sutil da cor da capa atrás do player. Opcional, e desligável nas configurações.</p></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="phone-wrap" id="phone-wrap">
+          <div class="phone" id="phone" aria-hidden="true">
+            <div class="phone-screen">
+              <div class="ph-glow"></div>
+              <div class="ph-status"><span>9:41</span><span class="ph-island"></span><span class="ph-sig"><i></i><i></i><i></i></span></div>
+              <div class="ph-pill">
+                <span class="ph-pill-art"></span>
+                <span class="ph-pill-text"><small>InSound</small><b>Maré Baixa</b><em>Os Ventos</em></span>
+                <span class="ph-pill-wave"><i></i><i></i><i></i><i></i><i></i></span>
+              </div>
+              <div class="ph-head">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9.5 6 6 6-6"/></svg>
+                <span>Tocando agora</span>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><circle cx="12" cy="5.5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18.5" r="1.6"/></svg>
+              </div>
+              <div class="ph-cover"><div class="ph-art"></div></div>
+              <div class="ph-info"><div><b>Maré Baixa</b><span>Os Ventos</span></div>
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.4-4.5-7.4-10.3A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.4 2.5C19.4 15.5 12 20 12 20z"/></svg>
+              </div>
+              <canvas class="ph-wave" id="ph-wave"></canvas>
+              <div class="ph-times"><span id="ph-cur">1:42</span><span id="ph-left">-2:17</span></div>
+              <div class="ph-controls">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h2.6c1.6 0 2.7-.7 3.6-2.1M3 7h2.6c1.6 0 2.7.7 3.6 2.1l2.6 5.8c.9 1.4 2 2.1 3.6 2.1H21M15 7h6M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M18 5.6v12.8a.5.5 0 0 1-.8.4l-8.6-6.4a.5.5 0 0 1 0-.8l8.6-6.4a.5.5 0 0 1 .8.4z"/><rect x="4.6" y="5" width="2.4" height="14" rx="1.2"/></svg>
+                <span class="ph-play"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><rect x="6" y="4.5" width="4.2" height="15" rx="1.3"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1.3"/></svg></span>
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M6 5.6v12.8a.5.5 0 0 0 .8.4l8.6-6.4a.5.5 0 0 0 0-.8L6.8 5.2a.5.5 0 0 0-.8.4z"/><rect x="17" y="5" width="2.4" height="14" rx="1.2"/></svg>
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3.5 20 6.5l-3 3M4 12V10.5a4 4 0 0 1 4-4h12M7 20.5l-3-3 3-3M20 12v1.5a4 4 0 0 1-4 4H4"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═════ faixas que reagem ao scroll ═════ -->
+    <div class="bands" aria-hidden="true">
+      <div class="marquee outline" data-dir="1"><div class="marquee-track"><span>Sua música, do seu jeito</span><span class="dot">●</span><span>Sua música, do seu jeito</span><span class="dot">●</span></div></div>
+      <div class="marquee solid" data-dir="-1"><div class="marquee-track"><span>cinco barras</span><span class="dot">▮▮▮▮▮</span><span>um player</span><span class="dot">▮▮▮▮▮</span><span>nenhum exagero</span><span class="dot">▮▮▮▮▮</span></div></div>
+    </div>
+
+    <!-- ═════ FONTES ═════ -->
+    <section class="sec" id="fontes">
+      <div class="wrap">
+        <p class="eyebrow reveal">Fontes de música</p>
+        <h2 class="h2" data-words>Três jeitos de ouvir. Sem promessas falsas.</h2>
+        <p class="body reveal narrow">Cada fonte é um <em>provider</em> de dados mais um <em>engine</em> de reprodução com a mesma interface — a tela não sabe de onde vem o som. E, honestamente, cada uma tem seus limites.</p>
+
+        <div class="cards">
+          <article class="card reveal" data-spot>
+            <header><span class="tag tag-free">Grátis</span><h3>Audius</h3></header>
+            <p>Músicas completas de artistas independentes, sem conta e sem Premium. Toca num <code>&lt;audio&gt;</code> comum: segundo plano e tela de bloqueio funcionam.</p>
+            <ul class="facts"><li><b>Catálogo</b><span>Independente. <em>Não</em> tem os hits das paradas.</span></li><li><b>Exige</b><span>Nada</span></li></ul>
+          </article>
+          <article class="card reveal" data-spot>
+            <header><span class="tag">Premium</span><h3>Spotify</h3></header>
+            <p>O catálogo inteiro, via Web Playback SDK. Login com PKCE: o app nunca vê seu usuário ou senha, e o Client Secret não existe no código.</p>
+            <ul class="facts"><li><b>Catálogo</b><span>Completo</span></li><li><b>Exige</b><span>Premium. Em modo desenvolvimento, até 5 contas autorizadas.</span></li></ul>
+          </article>
+          <article class="card reveal" data-spot>
+            <header><span class="tag tag-dim">Vitrine</span><h3>Demo</h3></header>
+            <p>Dados de exemplo e capas geradas por código. Serve para ver a interface funcionando, sem som.</p>
+            <ul class="facts"><li><b>Catálogo</b><span>Fictício</span></li><li><b>Exige</b><span>Nada</span></li></ul>
+          </article>
+        </div>
+        <p class="fine reveal">Sobre o YouTube: o InSound não o usa como fonte. Os termos da plataforma proíbem extrair o áudio ou tocar fora do player oficial.</p>
+      </div>
+    </section>
+
+    <!-- ═════ ROADMAP ═════ -->
+    <section class="sec" id="roadmap">
+      <div class="wrap">
+        <p class="eyebrow reveal">Roadmap</p>
+        <h2 class="h2" data-words>Do navegador para o bolso.</h2>
+        <ol class="road">
+          <li class="reveal"><span class="st st-done">Feito</span><h3>App web</h3><p>Início, busca, biblioteca, player em tela cheia, fila, tema claro e escuro.</p></li>
+          <li class="reveal"><span class="st st-done">Feito</span><h3>Audius e Spotify</h3><p>Troca de fonte nas configurações. Spotify depende de Premium e de configuração do app.</p></li>
+          <li class="reveal"><span class="st st-next">Planejado</span><h3>App Android</h3><p>O projeto já está preparado para o Capacitor (<code>com.insound.app</code>). Falta gerar e testar o APK.</p></li>
+          <li class="reveal"><span class="st st-next">Planejado</span><h3>Spotify no celular</h3><p>O Web Playback SDK pode não funcionar em WebView. O plano B é controlar o app oficial via Spotify Connect.</p></li>
+          <li class="reveal"><span class="st st-later">Sem data</span><h3>iPhone, widgets e tela de bloqueio nativos</h3><p>Exigem Mac, Xcode e código nativo. Fora do escopo por enquanto.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ═════ SOBRE ═════ -->
+    <section class="sec" id="sobre">
+      <div class="wrap about">
+        <div>
+          <p class="eyebrow reveal">Sobre</p>
+          <h2 class="h2" data-words>Um trabalho acadêmico, feito com carinho.</h2>
+        </div>
+        <div class="about-text">
+          <p class="body reveal">O InSound nasceu como projeto acadêmico, sem fins comerciais, por <a href="https://github.com/Dirt2939" data-hover>Dirt2939</a>. O código é aberto e está no <a href="https://github.com/Dirt2939/InSound" data-hover>GitHub</a>.</p>
+          <p class="body reveal">O som desta página foi gerado no seu navegador por um sintetizador de poucas linhas (botão <b>Dar play</b>, ou a tecla <kbd>Espaço</kbd>). Nenhuma música de terceiros está sendo tocada aqui.</p>
+          <p class="fine reveal">Spotify e Audius são marcas de seus respectivos titulares. O InSound não é afiliado, patrocinado nem endossado por elas.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-top">
+      <span class="foot-tag">Sua música, do seu jeito.</span>
+      <nav aria-label="Rodapé">
+        <a href="/" data-hover>Abrir o app</a>
+        <a href="https://github.com/Dirt2939/InSound" data-hover>GitHub</a>
+        <a href="#top" data-hover>Voltar ao topo ↑</a>
+      </nav>
+    </div>
+    <div class="foot-wm" aria-hidden="true">InSound</div>
+  </footer>
+
+  <script type="module" src="./site.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 Player de música mobile-first em **HTML, CSS e JavaScript puro** (com Vite), preparado para virar app nativo com **Capacitor**. Interface monocromática, capas coloridas, animações discretas e uma barra de progresso em forma de waveform inspirada na logo.
 
-**Demo:** https://insound.vercel.app
+**App:** https://insound-app.vercel.app · **Página institucional:** https://insound-app.vercel.app/site/
 
 ## Fontes de música
 
