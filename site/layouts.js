@@ -50,24 +50,47 @@ const put = (out, i, cx, cy, w, h, ang, alpha) => {
   out[o] = cx; out[o + 1] = cy; out[o + 2] = w; out[o + 3] = h; out[o + 4] = ang; out[o + 5] = alpha;
 };
 
-/* ───────── logo: cada barra da logo fatiada em colunas finas ───────── */
+/* ───────── logo: a logo fica inteira (desenhada à parte); as barras ficam "dentro" dela, invisíveis ───────── */
 export function logoLayout(W, H, out) {
   const s = Math.min((W * 0.7) / LOGO_VB.w, (H * 0.4) / LOGO_VB.h);
   const ox = (W - LOGO_VB.w * s) / 2;
   const oy = (H - LOGO_VB.h * s) / 2 - H * 0.12;
-  const total = BOXES.reduce((a, b) => a + b.w, 0);
-  const counts = BOXES.map((b) => Math.max(1, Math.round((N * b.w) / total)));
-  let diff = N - counts.reduce((a, b) => a + b, 0);
-  while (diff !== 0) { counts[2] += Math.sign(diff); diff -= Math.sign(diff); }
-  let i = 0;
-  BOXES.forEach((b, bi) => {
-    const c = counts[bi];
-    for (let j = 0; j < c; j++) {
-      const w = b.w / c;
-      put(out, i++, ox + (b.x + w * j + w / 2) * s, oy + (b.y + b.h / 2) * s, w * s + 0.8, b.h * s, 0, 1);
-    }
-  });
+  const cy = oy + (LOGO_VB.h * s) / 2;
+  // todas as barras nascem do centro da logo (largura/altura mínimas, transparentes) e saem para os lados
+  for (let i = 0; i < N; i++) put(out, i, W / 2, cy, 3, 3, 0, 0);
   return { ox, oy, s };
+}
+
+/* ───────── as 5 peças orgânicas da logo: existem em TODAS as etapas ───────── */
+export const logoGeom = (W, H) => {
+  const s = Math.min((W * 0.7) / LOGO_VB.w, (H * 0.4) / LOGO_VB.h);
+  return { s, cx: W / 2, cy: (H - LOGO_VB.h * s) / 2 - H * 0.12 + (LOGO_VB.h * s) / 2 };
+};
+const waveEmblemScale = (H) => (H * 0.285) / LOGO_VB.h;
+
+function emblem(out, cx, cy, sc, alpha = 1) {
+  BOXES.forEach((b, k) => put(out, k, cx + (b.x + b.w / 2 - LOGO_VB.w / 2) * sc, cy + (b.y + b.h / 2 - LOGO_VB.h / 2) * sc, b.w * sc, b.h * sc, 0, alpha));
+}
+
+/** Retângulo de destino de cada uma das 5 peças (stride 6), por etapa. */
+export function piecesLayout(name, W, H, out) {
+  switch (name) {
+    case 'logo': { const g = logoGeom(W, H); return emblem(out, g.cx, g.cy, g.s); }
+    case 'wave': return emblem(out, W / 2, H * 0.4, waveEmblemScale(H)); // a logo vira o "pico" da onda
+    case 'clusters': return emblem(out, W / 2, H * 0.13, (H * 0.075) / LOGO_VB.h); // coroa pequena no topo
+    case 'radial': { const g = radialGeom(W, H); return emblem(out, g.cx, g.cy, (g.R * 0.8) / LOGO_VB.h); } // emblema no centro do vinil
+    case 'line': return emblem(out, W / 2, H * 0.4, (H * 0.06) / LOGO_VB.h);
+    default: throw new Error('layout desconhecido: ' + name);
+  }
+}
+
+/** Interpola as 5 peças; a do meio chega primeiro e as pontas acompanham. */
+export function tweenPieces(A, B, m, out) {
+  for (let k = 0; k < 5; k++) {
+    const t = smooth(0, 1, clamp(m * 1.4 - (Math.abs(k - 2) / 2) * 0.4, 0, 1));
+    const o = k * STRIDE;
+    for (let j = 0; j < STRIDE; j++) out[o + j] = lerp(A[o + j], B[o + j], t);
+  }
 }
 
 /* ───────── waveform: a barra de progresso do app, em tela cheia ───────── */
@@ -77,7 +100,10 @@ export function waveLayout(W, H, out, fx) {
   const bw = clamp(step * 0.58, 2.5, 8);
   for (let i = 0; i < N; i++) {
     const h = H * 0.3 * (0.18 + 0.82 * ENV[i]) * (1 + fx.live[i] * 0.35);
-    put(out, i, m + i * step, H * 0.4, bw, Math.max(bw, h), 0, i / (N - 1) <= fx.prog ? 1 : 0.2);
+    const x = m + i * step;
+    const gap = (LOGO_VB.w / 2) * waveEmblemScale(H) + bw * 1.5; // meia largura da logo + folga
+    const hidden = Math.abs(x - W / 2) < gap;
+    put(out, i, x, H * 0.4, bw, Math.max(bw, h), 0, hidden ? 0 : i / (N - 1) <= fx.prog ? 1 : 0.2);
   }
 }
 

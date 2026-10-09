@@ -1,5 +1,5 @@
 import { BARS } from '../src/components/logo.js';
-import { N, STRIDE, SEQ, LOGO_VB, BOXES, layoutInto, radialGeom, tween, clamp, smooth, lerp } from './layouts.js';
+import { N, STRIDE, SEQ, BOXES, layoutInto, piecesLayout, tweenPieces, radialGeom, tween, clamp, smooth, lerp } from './layouts.js';
 
 /**
  * Palco fixo (sticky) com um canvas: as mesmas 64 barras viram a logo, uma waveform,
@@ -11,6 +11,9 @@ export function createStage({ root, canvas, chapters, reduced, getAudio }) {
   const A = new Float32Array(N * STRIDE);
   const B = new Float32Array(N * STRIDE);
   const OUT = new Float32Array(N * STRIDE);
+  const PA = new Float32Array(5 * STRIDE);
+  const PB = new Float32Array(5 * STRIDE);
+  const PO = new Float32Array(5 * STRIDE);
   const live = new Float32Array(N);
   const levels = new Float32Array(N);
   const MUL = new Float32Array(N);
@@ -123,23 +126,22 @@ export function createStage({ root, canvas, chapters, reduced, getAudio }) {
     const sh = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.35, 0, cx, cy, r);
     sh.addColorStop(0, 'rgba(255,255,255,.42)'); sh.addColorStop(0.5, 'rgba(255,255,255,0)'); sh.addColorStop(1, 'rgba(0,0,0,.35)');
     ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#050505'; ctx.beginPath(); ctx.arc(cx, cy, r * 0.12, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
   }
 
-  function drawLogo(info, t, alpha, beat) {
-    if (alpha < 0.01) return;
+  /** As 5 peças orgânicas, cada uma esticada para o seu retângulo da etapa atual. */
+  function drawPieces(t, beat, shadow) {
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(info.ox, info.oy);
-    ctx.scale(info.s, info.s);
+    if (shadow) { ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 16; }
     logoPaths.forEach((p, k) => {
-      const b = BOXES[k];
-      const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+      const b = BOXES[k], o = k * STRIDE;
       const lvl = live[Math.floor((k + 0.5) * (N / 5))] || 0;
-      const sy = 1 + 0.045 * Math.sin(t * 0.0017 + k * 1.3) + (energy - 0.25) * (0.26 * lvl + 0.1 * beat);
+      const breath = 1 + 0.03 * Math.sin(t * 0.0017 + k * 1.3) + (energy - 0.25) * (0.26 * lvl + 0.1 * beat);
       ctx.save();
-      ctx.translate(cx, cy); ctx.scale(1, sy); ctx.translate(-cx, -cy);
+      ctx.globalAlpha = clamp(PO[o + 5], 0, 1);
+      ctx.translate(PO[o], PO[o + 1]);
+      ctx.scale(PO[o + 2] / b.w, (PO[o + 3] / b.h) * breath);
+      ctx.translate(-(b.x + b.w / 2), -(b.y + b.h / 2));
       ctx.fill(p);
       ctx.restore();
     });
@@ -172,8 +174,8 @@ export function createStage({ root, canvas, chapters, reduced, getAudio }) {
     fx.spin = t * 0.00012 * (0.6 + energy);
 
     const nameA = SEQ[seg], nameB = SEQ[seg + 1];
-    const infoA = layoutInto(nameA, W, H, A, fx);
-    const infoB = layoutInto(nameB, W, H, B, fx);
+    layoutInto(nameA, W, H, A, fx);
+    layoutInto(nameB, W, H, B, fx);
     tween(A, B, m, OUT);
 
     // ── ponteiro, cliques e batida deformam as alturas ──
@@ -202,17 +204,16 @@ export function createStage({ root, canvas, chapters, reduced, getAudio }) {
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = FG;
 
-    const aLogo = nameA === 'logo', bLogo = nameB === 'logo';
-    const logoAlpha = aLogo ? 1 - smooth(0, 0.18, m) : bLogo ? smooth(0.82, 1, m) : 0;
-    const barsAlpha = aLogo || bLogo ? 1 - logoAlpha : 1;
-    const logoInfo = aLogo ? infoA : bLogo ? infoB : null;
-    if (logoInfo) drawLogo(logoInfo, t, logoAlpha, beat);
+    piecesLayout(nameA, W, H, PA);
+    piecesLayout(nameB, W, H, PB);
+    tweenPieces(PA, PB, m, PO);
 
     const discAlpha = nameA === 'radial' ? 1 - smooth(0, 0.6, m) : nameB === 'radial' ? smooth(0.4, 1, m) : 0;
     drawDisc(t, discAlpha);
 
-    if (barsAlpha > 0.01) for (let i = 0; i < N; i++) drawBar(i * STRIDE, mulH[i], barsAlpha);
+    for (let i = 0; i < N; i++) drawBar(i * STRIDE, mulH[i], 1);
     ctx.globalAlpha = 1;
+    drawPieces(t, beat, discAlpha > 0.3);
 
     chapterStyle();
     root.style.setProperty('--u', u.toFixed(3));
