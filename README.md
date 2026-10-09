@@ -113,8 +113,10 @@ Para o login do Spotify funcionar em produção:
 
 ## Contexto
 
-Projeto acadêmico, sem fins comerciais. O Web Playback SDK do Spotify não pode ser usado em projetos comerciais sem aprovação por escrito. Os dados do Audius vêm da API pública deles; confira os termos antes de publicar com outros fins.
+Projeto acadêmico, sem fins comerciais (veja a licença abaixo). O Web Playback SDK do Spotify não pode ser usado em projetos comerciais sem aprovação por escrito. Os dados do Audius vêm da API pública deles; confira os termos antes de publicar com outros fins.
 
 ## Licença
 
-Veja [LICENSE](LICENSE).
+[PolyForm Noncommercial 1.0.0](LICENSE): o código-fonte está disponível e pode ser usado, estudado e modificado para **fins não comerciais** (pessoal, estudo, pesquisa, educação). **Uso comercial não é permitido** sem autorização do autor. Não é uma licença "open source" no sentido da OSI.
+
+As versões anteriores deste repositório foram publicadas sob a licença MIT; quem as obteve naquele período continua com os direitos daquela licença sobre essas versões.

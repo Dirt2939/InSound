@@ -16,5 +16,6 @@
   },
   "dependencies": {
     "@capacitor/core": "^8.5.3"
-  }
+  },
+  "license": "SEE LICENSE IN LICENSE"
 }
