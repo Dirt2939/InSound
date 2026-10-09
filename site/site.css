@@ -112,6 +112,8 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor [dat
 
 /* ───────── palco ───────── */
 .stage { position: relative; height: 640vh; }
+/* mouse com roda: o scroll anda em saltos grandes, então o palco fica bem mais comprido */
+@media (hover: hover) and (pointer: fine) { .stage { height: 1250vh; } }
 .stage-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 #stage-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .vignette { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, var(--bg) 0%, rgba(5, 5, 5, 0.82) 20%, rgba(5, 5, 5, 0) 46%), radial-gradient(120% 90% at 50% 28%, transparent 52%, rgba(5, 5, 5, 0.85) 100%); }

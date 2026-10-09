@@ -154,7 +154,11 @@ export function createStage({ root, canvas, chapters, reduced, getAudio }) {
     if (!W) resize();
 
     target = readTarget();
-    u += (target - u) * Math.min(1, dt * 0.011); // inércia do scroll
+    // inércia do scroll: segue o alvo suavemente e com velocidade máxima, para a roda do mouse
+    // (que anda em saltos grandes) não "atropelar" as animações
+    const ease = (target - u) * Math.min(1, dt * 0.0045);
+    const maxStep = dt * 0.0012; // ≈ 1,2 etapas do palco por segundo
+    u += clamp(ease, -maxStep, maxStep);
     if (Math.abs(target - u) < 0.0004) u = target;
 
     const audio = getAudio();
