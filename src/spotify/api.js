@@ -1,4 +1,4 @@
-import { getAccessToken } from './auth.js';
+import { getAccessToken, expireSession } from './auth.js';
 
 const BASE = 'https://api.spotify.com/v1';
 
@@ -15,6 +15,7 @@ export async function api(path, { method = 'GET', query, body, retries = 2 } = {
   const url = new URL(path.startsWith('http') ? path : BASE + path);
   if (query) for (const [k, v] of Object.entries(query)) v != null && url.searchParams.set(k, v);
 
+  let refreshed = false;
   for (let attempt = 0; ; attempt++) {
     const token = await getAccessToken();
     if (!token) throw new SpotifyError(401, 'Sessão expirada. Entre novamente.');
@@ -24,6 +25,16 @@ export async function api(path, { method = 'GET', query, body, retries = 2 } = {
       body: body ? JSON.stringify(body) : undefined,
     });
 
+    if (res.status === 401) {
+      // token recusado: tenta renovar uma vez; se continuar 401, o acesso foi revogado
+      if (!refreshed) {
+        refreshed = true;
+        await getAccessToken({ force: true });
+        continue;
+      }
+      expireSession();
+      throw new SpotifyError(401, 'Sessão expirada. Entre novamente.');
+    }
     if (res.status === 429 && attempt < retries) {
       const wait = Math.min(8, Number(res.headers.get('Retry-After') || 1));
       await new Promise((r) => setTimeout(r, wait * 1000));

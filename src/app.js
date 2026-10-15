@@ -34,7 +34,8 @@ export async function boot() {
   const splash = showSplash(root, { duration: skip ? 350 : 1700 });
 
   let mode = session.get().mode;
-  let loginError = null;
+  let loginError = storage.get('login-error');
+  storage.remove('login-error');
 
   // retorno do login do Spotify (?code=...)
   const redirect = await auth.handleRedirect();
@@ -76,6 +77,21 @@ export async function boot() {
     mountShell(root);
   }
   await splash.hide();
+  if (mode === 'spotify') watchSession();
+}
+
+/** Detecta revogação de acesso: valida ao voltar para a aba (no máx. a cada 5 min) e a cada 10 min. */
+function watchSession() {
+  let last = Date.now();
+  const check = () => {
+    last = Date.now();
+    auth.validateSession();
+  };
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && Date.now() - last > 5 * 60_000) check();
+  });
+  setInterval(() => !document.hidden && check(), 10 * 60_000);
+  setTimeout(check, 3000); // logo após abrir o app
 }
 
 function mountShell(root) {

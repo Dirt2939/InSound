@@ -121,20 +121,52 @@ function saveTokens(t) {
 export const hasSession = () => !!storage.get('tokens')?.refresh;
 
 let refreshing = null;
-/** Retorna um access token válido (renova quando perto de expirar). */
-export async function getAccessToken() {
+let expiring = false;
+
+const SESSION_MSG = 'Sua sessão do Spotify terminou ou o acesso foi revogado. Entre novamente.';
+
+/** Sessão inválida (acesso revogado, refresh token vencido): limpa tudo e volta para o login com um aviso. */
+export function expireSession(message = SESSION_MSG) {
+  if (expiring) return;
+  expiring = true;
+  logoutLocal();
+  storage.remove('mode');
+  storage.set('login-error', message);
+  location.hash = '#/home';
+  location.reload();
+}
+
+/**
+ * Retorna um access token válido. Renova quando está perto de expirar ou quando `force` é true
+ * (usado ao receber 401 e na validação periódica). Se o Spotify recusar o refresh token
+ * (`invalid_grant` = acesso revogado), encerra a sessão.
+ */
+export async function getAccessToken({ force = false } = {}) {
   const t = storage.get('tokens');
   if (!t) return null;
-  if (Date.now() < t.expiresAt) return t.access;
-  if (!t.refresh) return null;
+  if (!force && Date.now() < t.expiresAt) return t.access;
+  if (!t.refresh) {
+    expireSession();
+    return null;
+  }
   refreshing ||= requestToken({ grant_type: 'refresh_token', refresh_token: t.refresh })
     .then((r) => (saveTokens(r), storage.get('tokens').access))
     .catch((err) => {
-      if (err.code === 'invalid_grant') storage.remove('tokens'); // refresh revogado/expirado
+      if (err.code === 'invalid_grant') expireSession();
       throw err;
     })
     .finally(() => (refreshing = null));
   return refreshing;
+}
+
+/** Confirma com o Spotify que o acesso continua válido (renovação forçada). Falhas de rede são ignoradas. */
+export async function validateSession() {
+  if (!hasSession()) return;
+  try {
+    await getAccessToken({ force: true });
+  } catch {
+    /* sem rede ou erro temporário: tenta de novo na próxima validação */
+  }
 }
 
 export function logoutLocal() {
