@@ -47,6 +47,10 @@ Para o Spotify:
 
 Scripts: `npm run dev`, `npm run build`, `npm run preview`.
 
+## Documentação
+
+- [Armazenamento local e APIs](docs/armazenamento-e-apis.md): chaves do `localStorage`, interface de provedores, endpoints do Spotify e do Audius, cache e limites.
+
 ## Variáveis de ambiente
 
 | Variável | Descrição |
